@@ -14,20 +14,57 @@ def create_app(test_config=None):
   setup_db(app)
   
   '''
-  @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
+  Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
+  cors = CORS(app, resources={r"/*": {"origins": "*"}})
+  
+  # @app.route('/messages')
+  # @cross_origin()
+  # def get_messages():
+    # return 'GETTING MESSAGES'
 
   '''
-  @TODO: Use the after_request decorator to set Access-Control-Allow
+  Use the after_request decorator to set Access-Control-Allow
   '''
+  # CORS Headers 
+  @app.after_request
+  def after_request(response):
+      response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+      response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,POST,DELETE,OPTIONS')
+      return response
 
   '''
-  @TODO: 
-  Create an endpoint to handle GET requests 
-  for all available categories.
+  Endpoint that handles GET requests for all available categories.
   '''
+  @app.route('/categories')
+  def get_categories():
+      categories = Category.query.order_by(Category.id).all()
+      categories_dict = {}
+      for category in categories:
+          categories_dict[category.id] = category.type
 
+      return jsonify({
+        'success': True,
+        'categories': categories_dict
+      })
 
+  def paginate_questions(request, questions):
+      page = request.args.get('page', 1, type=int)    
+      start = (page - 1) * QUESTIONS_PER_PAGE
+      end = start + QUESTIONS_PER_PAGE
+      questions = [question.format() for question in questions]
+      current_questions = questions[start:end]
+      return current_questions
+
+  @app.errorhandler(404)
+  def not_found(error):
+      return jsonify({
+          'success': False,
+          'error': 404,
+          'message': 'resource not found'
+      }), 404
+        
+        
   '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
@@ -40,6 +77,29 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+  @app.route('/questions')
+  def get_questions():
+        page = request.args.get('page', 1, type=int)    
+        questions = Question.query.order_by(Question.question).all()
+        current_questions = paginate_questions(request, questions)
+
+        if len(current_questions) == 0:
+            abort(404)
+
+        categories = Category.query.order_by(Category.id).all()
+        categories_dict = {}
+        for category in categories:
+              categories_dict[category.id] = category.type
+
+        # question: id, question, answer, category, difficulty
+
+        return jsonify({
+          'success': True,
+          'questions': current_questions,
+          'total_questions': len(questions),
+          'current_category': '0',
+          'categories': categories_dict
+        })
 
   '''
   @TODO: 
