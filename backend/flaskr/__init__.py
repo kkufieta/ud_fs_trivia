@@ -145,14 +145,12 @@ def create_app(test_config=None):
     if category_id not in category_ids:
           abort(404)
     questions = Question.query.join(Category, Question.category == category_id).order_by(Question.category).all()
-    total_questions = Question.query.count()
-    questions = [question.format() for question in questions]
-    print(questions)
-    print(total_questions)
+    current_questions = paginate_questions(request, questions)
+    total_questions = len(current_questions)
 
     return jsonify({
       'success': True,
-      'questions': questions,
+      'questions': current_questions,
       'total_questions': total_questions,
       'current_category': category_id
     })
