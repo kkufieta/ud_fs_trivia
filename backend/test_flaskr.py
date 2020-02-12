@@ -67,6 +67,26 @@ class TriviaTestCase(unittest.TestCase):
 
         self.check_404(res, data)
 
+    def test_get_questions_by_category(self):
+        res = self.client().get('/categories/1/questions')
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(data['current_category'])
+        self.assertEqual(data['current_category'], 1)
+
+    def test_404_get_questions_invalid_category_id(self):
+        res = self.client().get('/categories/1000/questions')
+        data = json.loads(res.data)
+
+        self.check_404(res, data)
+
+        res = self.client().get('/categories/-1/questions')
+        data = json.loads(res.data)
+
+        self.check_404(res, data)
 
 
 # Make the tests conveniently executable
