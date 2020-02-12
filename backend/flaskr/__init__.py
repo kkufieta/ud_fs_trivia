@@ -146,6 +146,8 @@ def create_app(test_config=None):
           abort(404)
     questions = Question.query.join(Category, Question.category == category_id).order_by(Question.category).all()
     current_questions = paginate_questions(request, questions)
+    if len(current_questions) == 0:
+          abort(404)
     total_questions = len(current_questions)
 
     return jsonify({

@@ -88,6 +88,22 @@ class TriviaTestCase(unittest.TestCase):
 
         self.check_404(res, data)
 
+    def test_404_get_questions_requesting_beyond_valid_page(self):
+        res = self.client().get('/categories/3/questions?page=1000')
+        data = json.loads(res.data)
+
+        self.check_404(res, data)
+
+    def test_get_questions_by_category_with_request_parameter(self):
+        res = self.client().get('/categories/2/questions?page=1')
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(data['current_category'])
+        self.assertEqual(data['current_category'], 2)
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
