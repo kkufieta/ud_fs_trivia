@@ -32,38 +32,41 @@ class TriviaTestCase(unittest.TestCase):
     """
     Write at least one test for each test for successful operation and for expected errors.
     """
-    def test_get_categories(self):
-        res = self.client().get('/categories')
-        self.assertEqual(res.status_code, 200)
-        data = json.loads(res.data)
-        categories = data['categories']
 
+    def check_404(self, res, data):
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
+
+    def check_200(self, res, data):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertTrue(categories)
-        self.assertIsInstance(categories, dict)
+
+    def test_get_categories(self):
+        res = self.client().get('/categories')
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['categories'])
+        self.assertIsInstance(data['categories'], dict)
         
     def test_get_questions(self):
         res = self.client().get('/questions')
-        self.assertEqual(res.status_code, 200)
         data = json.loads(res.data)
-        categories = data['categories']
 
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
+        self.check_200(res, data)
         self.assertTrue(data['questions'])
         self.assertTrue(data['total_questions'])
         self.assertTrue(data['current_category'])
-        self.assertTrue(categories)
-        self.assertIsInstance(categories, dict)
+        self.assertTrue(data['categories'])
+        self.assertIsInstance(data['categories'], dict)
 
     def test_404_sent_requesting_beyond_valid_page(self):
         res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 404)
-        self.assertEqual(data['success'], False)
-        self.assertEqual(data['message'], 'resource not found')
+        self.check_404(res, data)
+
 
 
 # Make the tests conveniently executable
