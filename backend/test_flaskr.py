@@ -73,6 +73,10 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'service unavailable')
 
+    '''
+    Tests
+    '''
+    def test_200_get_categories(self):
         res = self.client().get('/categories')
         data = json.loads(res.data)
 
@@ -80,7 +84,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['categories'])
         self.assertIsInstance(data['categories'], dict)
         
-    def test_get_questions(self):
+    def test_200_get_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
 
@@ -91,13 +95,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['categories'])
         self.assertIsInstance(data['categories'], dict)
 
-    def test_404_sent_requesting_beyond_valid_page(self):
+    def test_404_get_questions_beyond_valid_page(self):
         res = self.client().get('/questions?page=1000')
         data = json.loads(res.data)
 
         self.check_404(res, data)
 
-    def test_get_questions_by_category(self):
+    def test_200_get_questions_by_category(self):
         res = self.client().get('/categories/1/questions')
         data = json.loads(res.data)
 
@@ -118,13 +122,13 @@ class TriviaTestCase(unittest.TestCase):
 
         self.check_404(res, data)
 
-    def test_404_get_questions_requesting_beyond_valid_page(self):
+    def test_404_get_questions_based_on_category_beyond_valid_page(self):
         res = self.client().get('/categories/3/questions?page=1000')
         data = json.loads(res.data)
 
         self.check_404(res, data)
 
-    def test_get_questions_by_category_with_request_parameter(self):
+    def test_200_get_questions_by_category_with_request_parameter(self):
         res = self.client().get('/categories/2/questions?page=1')
         data = json.loads(res.data)
 
