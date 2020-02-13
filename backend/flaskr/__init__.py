@@ -64,7 +64,6 @@ def create_app(test_config=None):
           'message': 'bad request'
       }), 400
 
-
   @app.errorhandler(404)
   def not_found(error):
       return jsonify({
@@ -143,10 +142,6 @@ def create_app(test_config=None):
   '''
   Endpoint to POST a new question, which requires the
   question and answer text, category and difficulty score.
-
-  TEST: When you submit a question on the "Add" tab, 
-  the form will clear and the question will appear at the end of the last page
-  of the questions list in the "List" tab.  
   '''
   @app.route('/questions', methods=['POST'])
   def create_question():
@@ -184,6 +179,9 @@ def create_app(test_config=None):
     except:
       abort(422)
   
+  '''
+  Handles not allowed new question post request to specific question endpoint.
+  '''
   @app.route('/questions/<int:question_id>', methods=['POST'])
   def question_created_not_allowed(question_id):
     abort(405)
@@ -220,7 +218,6 @@ def create_app(test_config=None):
       'total_questions': total_questions,
       'current_category': category_id
     })
-
 
   '''
   @TODO: 
