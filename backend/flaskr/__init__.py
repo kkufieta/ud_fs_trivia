@@ -175,38 +175,60 @@ def create_app(test_config=None):
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()    
-    question = body.get('question')
-    answer = body.get('answer')
-    difficulty = body.get('difficulty')
-    category = body.get('category')
-    if not question or not answer or not difficulty or not category:
-          abort(400)
 
-    try:
-      question = Question(question=question, answer=answer,
-                          difficulty=difficulty, category=category)
-                          
-      question.insert()
+    search_term = body.get('searchTerm')
+    if search_term:
+        questions = Question.query.filter(Question.question.ilike('%' + search_term + '%'))\
+          .order_by(Question.id).all()
+          # search for questions
 
-      questions = Question.query.order_by(Question.id).all()
-      current_questions = paginate_questions(request, questions)
+        current_questions = paginate_questions(request, questions)
 
-      categories = Category.query.order_by(Category.id).all()
-      categories_dict = {}
-      for category in categories:
-            categories_dict[category.id] = category.type
+        categories = Category.query.order_by(Category.id).all()
+        categories_dict = {}
+        for category in categories:
+              categories_dict[category.id] = category.type
 
-      return jsonify({
-        'success': True,
-        'created_id': question.id,
-        'questions': current_questions,
-        'total_questions': len(questions),
-        'current_category': '0',
-        'categories': categories_dict
-      })
+        return jsonify({
+          'success': True,
+          'questions': current_questions,
+          'total_questions': len(questions),
+          'current_category': '0',
+          'categories': categories_dict
+        })
+    else:
+      question = body.get('question')
+      answer = body.get('answer')
+      difficulty = body.get('difficulty')
+      category = body.get('category')
+      if not question or not answer or not difficulty or not category:
+            abort(400)
 
-    except:
-      abort(422)
+      try:
+        question = Question(question=question, answer=answer,
+                            difficulty=difficulty, category=category)
+                            
+        question.insert()
+
+        questions = Question.query.order_by(Question.id).all()
+        current_questions = paginate_questions(request, questions)
+
+        categories = Category.query.order_by(Category.id).all()
+        categories_dict = {}
+        for category in categories:
+              categories_dict[category.id] = category.type
+
+        return jsonify({
+          'success': True,
+          'created_id': question.id,
+          'questions': current_questions,
+          'total_questions': len(questions),
+          'current_category': '0',
+          'categories': categories_dict
+        })
+
+      except:
+        abort(422)
   
   '''
   Handles not allowed new question post request to specific question endpoint.

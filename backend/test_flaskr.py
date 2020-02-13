@@ -25,6 +25,10 @@ class TriviaTestCase(unittest.TestCase):
             'category': 3
         }
 
+        self.searchTerm = {
+            'searchTerm': 'boxer'
+        }
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -162,7 +166,7 @@ class TriviaTestCase(unittest.TestCase):
         self.check_405(res, data)
 
     def test_200_delete_question(self):
-        question_id = 36
+        question_id = 39
         res = self.client().delete('/questions/' + str(question_id))
         data = json.loads(res.data)
 
@@ -180,6 +184,18 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(res.data)
 
         self.check_422(res, data)
+
+    def test_200_search_for_question(self):
+        res = self.client().post('/questions', json=self.searchTerm)
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(data['categories'])
+        self.assertTrue(data['current_category'])
+        self.assertEqual(int(data['current_category']), 0)
+        self.assertEqual(len(data['questions']), 1)
 
 
 # Make the tests conveniently executable
