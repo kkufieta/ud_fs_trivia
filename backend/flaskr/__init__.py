@@ -56,6 +56,9 @@ def create_app(test_config=None):
       current_questions = questions[start:end]
       return current_questions
       
+  '''
+  Error handlers for all expected errors.
+  '''
   @app.errorhandler(400)
   def not_found(error):
       return jsonify({
@@ -132,8 +135,7 @@ def create_app(test_config=None):
         })
 
   '''
-  @TODO: 
-  Create an endpoint to DELETE question using a question ID. 
+  Endpoint to DELETE question using a question ID.
 
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
@@ -258,12 +260,6 @@ def create_app(test_config=None):
   and shown whether they were correct or not. 
   '''
 
-  '''
-  @TODO: 
-  Create error handlers for all expected errors 
-  including 404 and 422. 
-  '''
-  
   return app
 
     
