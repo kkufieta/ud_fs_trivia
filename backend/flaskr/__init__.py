@@ -55,7 +55,7 @@ def create_app(test_config=None):
       questions = [question.format() for question in questions]
       current_questions = questions[start:end]
       return current_questions
-
+      
   @app.errorhandler(400)
   def not_found(error):
       return jsonify({
@@ -88,7 +88,7 @@ def create_app(test_config=None):
           'error': 422,
           'message': 'unprocessable entity'
         }), 422
-        
+
   @app.errorhandler(500)
   def unprocessable_entity(error):
         return jsonify({
@@ -96,7 +96,7 @@ def create_app(test_config=None):
           'error': 500,
           'message': 'internal server error'
         }), 500
-        
+
   @app.errorhandler(503)
   def unprocessable_entity(error):
         return jsonify({
@@ -212,7 +212,7 @@ def create_app(test_config=None):
     current_questions = paginate_questions(request, questions)
     if len(current_questions) == 0:
           abort(404)
-    total_questions = len(current_questions)
+    total_questions = len(questions)
 
     return jsonify({
       'success': True,
