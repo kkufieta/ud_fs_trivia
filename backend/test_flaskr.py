@@ -37,19 +37,42 @@ class TriviaTestCase(unittest.TestCase):
         pass
 
     """
-    Write at least one test for each test for successful operation and for expected errors.
+    HTTP Method checks
     """
+    def check_200(self, res, data):
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+
+    def check_400(self, res, data):
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'bad request')
 
     def check_404(self, res, data):
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'resource not found')
 
-    def check_200(self, res, data):
-        self.assertEqual(res.status_code, 200)
-        self.assertEqual(data['success'], True)
+    def check_405(self, res, data):
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'method not allowed')
 
-    def test_get_categories(self):
+    def check_422(self, res, data):
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable entity')
+
+    def check_500(self, res, data):
+        self.assertEqual(res.status_code, 500)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'internal server error')
+
+    def check_503(self, res, data):
+        self.assertEqual(res.status_code, 503)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'service unavailable')
+
         res = self.client().get('/categories')
         data = json.loads(res.data)
 
