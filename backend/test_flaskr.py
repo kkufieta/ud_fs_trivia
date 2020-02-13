@@ -161,6 +161,27 @@ class TriviaTestCase(unittest.TestCase):
 
         self.check_405(res, data)
 
+    def test_200_delete_question(self):
+        question_id = 36
+        res = self.client().delete('/questions/' + str(question_id))
+        data = json.loads(res.data)
+
+        question = Question.query.filter(Question.id == question_id).one_or_none()
+        
+        self.check_200(res, data)
+        self.assertEqual(question, None)
+        self.assertEqual(data['deleted_id'], question_id)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(data['categories'])
+        
+    def test_422_delete_question_does_not_exist(self):
+        res = self.client().delete('/questions/1000')
+        data = json.loads(res.data)
+
+        self.check_422(res, data)
+
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
