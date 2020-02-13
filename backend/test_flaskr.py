@@ -138,6 +138,28 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['current_category'])
         self.assertEqual(data['current_category'], 2)
 
+    def test_200_create_question(self):
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['created_id'])
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']) >= 1)
+        self.assertTrue(data['total_questions'] >= len(data['questions']))
+        self.assertTrue(data['categories'])
+
+    def test_405_if_question_creation_not_allowed(self):
+        res = self.client().post('/questions/1', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.check_405(res, data)
+
+        res = self.client().post('/questions/1000', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.check_405(res, data)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
