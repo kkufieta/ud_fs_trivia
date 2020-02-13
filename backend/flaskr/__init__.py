@@ -110,10 +110,10 @@ def create_app(test_config=None):
   Returns a list of questions, number of total questions, current category,
   and a dict of all categories.
   '''
-  @app.route('/questions')
+  @app.route('/questions', methods=['GET'])
   def get_questions():
         page = request.args.get('page', 1, type=int)    
-        questions = Question.query.order_by(Question.question).all()
+        questions = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, questions)
 
         if len(current_questions) == 0:
