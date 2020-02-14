@@ -166,7 +166,12 @@ class TriviaTestCase(unittest.TestCase):
         self.check_405(res, data)
 
     def test_200_delete_question(self):
-        question_id = 39
+        res = self.client().post('/questions', json=self.new_question)
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['created_id'])
+        question_id = data['created_id']
         res = self.client().delete('/questions/' + str(question_id))
         data = json.loads(res.data)
 
