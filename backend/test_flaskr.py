@@ -142,18 +142,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['current_category'])
         self.assertEqual(data['current_category'], 2)
 
-    def test_200_create_question(self):
-        res = self.client().post('/questions', json=self.new_question)
-        data = json.loads(res.data)
-
-        self.check_200(res, data)
-        self.assertTrue(data['created_id'])
-        self.assertTrue(data['questions'])
-        self.assertTrue(data['total_questions'])
-        self.assertTrue(len(data['questions']) >= 1)
-        self.assertTrue(data['total_questions'] >= len(data['questions']))
-        self.assertTrue(data['categories'])
-
     def test_405_if_question_creation_not_allowed(self):
         res = self.client().post('/questions/1', json=self.new_question)
         data = json.loads(res.data)
@@ -165,21 +153,31 @@ class TriviaTestCase(unittest.TestCase):
 
         self.check_405(res, data)
 
-    def test_200_delete_question(self):
+    def test_200_create_and_delete_question(self):
+        # Create a question, test if it works properly
         res = self.client().post('/questions', json=self.new_question)
         data = json.loads(res.data)
 
         self.check_200(res, data)
         self.assertTrue(data['created_id'])
-        question_id = data['created_id']
-        res = self.client().delete('/questions/' + str(question_id))
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']) >= 1)
+        self.assertTrue(data['total_questions'] >= len(data['questions']))
+        self.assertTrue(data['categories'])
+
+        # Save id of created question so we can delete it
+        created_id = data['created_id']
+
+        # Test if deleting a question works properly
+        res = self.client().delete('/questions/' + str(created_id))
         data = json.loads(res.data)
 
-        question = Question.query.filter(Question.id == question_id).one_or_none()
+        question = Question.query.filter(Question.id == created_id).one_or_none()
         
         self.check_200(res, data)
         self.assertEqual(question, None)
-        self.assertEqual(data['deleted_id'], question_id)
+        self.assertEqual(data['deleted_id'], created_id)
         self.assertTrue(data['questions'])
         self.assertTrue(data['total_questions'])
         self.assertTrue(data['categories'])
