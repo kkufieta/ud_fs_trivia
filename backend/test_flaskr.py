@@ -29,6 +29,25 @@ class TriviaTestCase(unittest.TestCase):
             'searchTerm': 'boxer'
         }
 
+        self.play_quiz_json_category_all = {
+            'previous_questions': [],
+            'quiz_category': {'type': 'ALL', 'id': 0}
+        }
+
+        self.play_quiz_json_category_1 = {
+            'previous_questions': [20, 21],
+            'quiz_category': {'type': 'Science', 'id': 1}
+        }
+
+        self.play_quiz_question_id_category_1 = 22;
+
+        self.play_quiz_json_category_2 = {
+            'previous_questions': [16, 17],
+            'quiz_category': {'type': 'Art', 'id': 2}
+        }
+
+        self.play_quiz_question_possible_ids_category_2 = [18, 19];
+
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -199,6 +218,32 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['current_category'])
         self.assertEqual(int(data['current_category']), 0)
         self.assertEqual(len(data['questions']), 1)
+
+    def test_200_play_quiz(self):
+        # Test with all categories
+        res = self.client().post('/quizzes', json=self.play_quiz_json_category_all)
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['question'])
+
+        # Test with category 1
+        res = self.client().post('/quizzes', json=self.play_quiz_json_category_1)
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['question'])
+        self.assertEqual(data['question']['id'], self.play_quiz_question_id_category_1)
+
+        # Test with category 2
+        res = self.client().post('/quizzes', json=self.play_quiz_json_category_2)
+        data = json.loads(res.data)
+
+        self.check_200(res, data)
+        self.assertTrue(data['question'])
+        self.assertTrue(data['question']['id'] in
+                        self.play_quiz_question_possible_ids_category_2)
+
 
 
 # Make the tests conveniently executable
