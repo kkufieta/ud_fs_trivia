@@ -114,7 +114,6 @@ def create_app(test_config=None):
   '''
   @app.route('/questions', methods=['GET'])
   def get_questions():
-        page = request.args.get('page', 1, type=int)    
         questions = Question.query.order_by(Question.id).all()
         current_questions = paginate_questions(request, questions)
 
@@ -277,8 +276,6 @@ def create_app(test_config=None):
     body = request.get_json()    
     previous_questions = body.get('previous_questions')
     quiz_category = body.get('quiz_category')
-    print(previous_questions)
-    print(quiz_category, type(quiz_category))
     category_id = quiz_category['id']
     if category_id == 0:
       question_ids = Question.query.with_entities(Question.id).all()
