@@ -60,7 +60,7 @@ def create_app(test_config=None):
   Error handlers for all expected errors.
   '''
   @app.errorhandler(400)
-  def not_found(error):
+  def bad_request(error):
       return jsonify({
           'success': False,
           'error': 400,
@@ -76,7 +76,7 @@ def create_app(test_config=None):
       }), 404
 
   @app.errorhandler(405)
-  def not_found(error):
+  def not_allowed(error):
       return jsonify({
           'success': False,
           'error': 405,
@@ -92,7 +92,7 @@ def create_app(test_config=None):
         }), 422
 
   @app.errorhandler(500)
-  def unprocessable_entity(error):
+  def internal_server_error(error):
         return jsonify({
           'success': False,
           'error': 500,
@@ -100,7 +100,7 @@ def create_app(test_config=None):
         }), 500
 
   @app.errorhandler(503)
-  def unprocessable_entity(error):
+  def service_unavailable(error):
         return jsonify({
           'success': False,
           'error': 503,
