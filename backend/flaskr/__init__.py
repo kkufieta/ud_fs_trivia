@@ -275,13 +275,22 @@ def create_app(test_config=None):
   def get_questions_to_play_quiz():
     body = request.get_json()    
     previous_questions = body.get('previous_questions')
+
+    # Get the category id from the body.
     quiz_category = body.get('quiz_category')
     category_id = quiz_category['id']
+
+    # If the category id is zero, no specific category is chosen and so we
+    # get all question ids from all categories.
+    # Otherwise, get the question ids from the specific category.
     if category_id == 0:
       question_ids = Question.query.with_entities(Question.id).all()
     else:
       question_ids = Question.query.filter(Question.category == category_id).\
         with_entities(Question.id).all()
+
+    # We grab a random question id. If it is already a previous question,
+    # we pop it out of the question_ids array and try to find a new question id.
     question_ids = [question[0] for question in question_ids]
     question = None
     while not question and len(question_ids) > 0:
@@ -295,6 +304,7 @@ def create_app(test_config=None):
           'question': question.format()
         })
       
+    # There are no (new) questions left, so we return None.
     return jsonify({
       'success': True,
       'question': None
