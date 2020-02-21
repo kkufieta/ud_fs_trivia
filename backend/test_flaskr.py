@@ -39,14 +39,14 @@ class TriviaTestCase(unittest.TestCase):
             'quiz_category': {'type': 'Science', 'id': 1}
         }
 
-        self.play_quiz_question_id_category_1 = 22;
+        self.play_quiz_question_id_category_1 = 22
 
         self.play_quiz_json_category_2 = {
             'previous_questions': [16, 17],
             'quiz_category': {'type': 'Art', 'id': 2}
         }
 
-        self.play_quiz_question_possible_ids_category_2 = [18, 19];
+        self.play_quiz_question_possible_ids_category_2 = [18, 19]
 
         # binds the app to the current context
         with self.app.app_context():
