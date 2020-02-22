@@ -171,11 +171,12 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/search', methods=['POST'])
   def search_for_question():
-    body = request.get_json()    
-
+    body = request.get_json()
+    if not body:
+          abort(400)
     search_term = body.get('searchTerm')
-    if not isinstance(search_term, str):
-        abort(400)
+    if not search_term or not isinstance(search_term, str):
+          abort(400)
     questions = Question.query.filter(Question.question.ilike('%' + search_term + '%'))\
       .order_by(Question.id).all()
 
@@ -201,6 +202,8 @@ def create_app(test_config=None):
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()    
+    if not body:
+        abort(400)
     question = body.get('question')
     answer = body.get('answer')
     difficulty = body.get('difficulty')
@@ -279,10 +282,15 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods=['POST'])
   def get_questions_to_play_quiz():
     body = request.get_json()    
-    previous_questions = body.get('previous_questions')
+    if not body:
+          abort(400)
 
-    # Get the category id from the body.
+    previous_questions = body.get('previous_questions')
     quiz_category = body.get('quiz_category')
+    if (previous_questions == None or not quiz_category or not 'id' in quiz_category or 
+        not isinstance(previous_questions, list) or not isinstance(quiz_category, dict)):
+        abort(400)
+
     category_id = quiz_category['id']
 
     # If the category id is zero, no specific category is chosen and so we
