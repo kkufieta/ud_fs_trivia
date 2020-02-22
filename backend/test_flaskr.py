@@ -29,6 +29,10 @@ class TriviaTestCase(unittest.TestCase):
             'searchTerm': 'boxer'
         }
 
+        self.invalidSearchTerm = {
+            'searchTerm': 12
+        }
+
         self.play_quiz_json_category_all = {
             'previous_questions': [],
             'quiz_category': {'type': 'ALL', 'id': 0}
@@ -207,8 +211,15 @@ class TriviaTestCase(unittest.TestCase):
 
         self.check_422(res, data)
 
+    def test_400_invalid_search_term(self):
+        res = self.client().post('/questions/search', json=self.invalidSearchTerm)
+        data = json.loads(res.data)
+
+        self.check_400(res, data)
+
+
     def test_200_search_for_question(self):
-        res = self.client().post('/questions', json=self.searchTerm)
+        res = self.client().post('/questions/search', json=self.searchTerm)
         data = json.loads(res.data)
 
         self.check_200(res, data)
