@@ -83,10 +83,11 @@ The API will return three error types when requests fail:
 * 422: Not Processable
 * 405: Method Not Allowed
 
-## Endpoint5
+## Endpoints
 
 ### GET /categories
 * General:
+    * Fetch a list of categories.
     * Returns a success value, and a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category.
 * Sample: `curl http://127.0.0.1:5000/categories`
 
@@ -106,6 +107,7 @@ The API will return three error types when requests fail:
 
 ### GET /questions
 * General:
+    * Fetch questions, paginated in groups of 10.
     * Returns a success value, a list of question objects, total number of questions, current category, and a list of categories.
     * Results are paginated in groups of 10. Include a request argument to choose the page number, starting from 1. The default page number is 1.
 * Sample: `curl http://127.0.0.1:5000/questions?page=2`
@@ -194,7 +196,7 @@ The API will return three error types when requests fail:
 ### DELETE /questions/{question_id}
 * General:
     * Deletes the question of the given ID if it exists.
-    * Returns a success value, the id of the deleted question, a list of current questions, the total number of questions, and the categories.
+    * Returns a success value, the ID of the deleted question, a list of current questions, the total number of questions, and the categories.
 * Sample: `curl -X DELETE http://127.0.0.1:5000/questions/5`
 
 ```
@@ -416,7 +418,7 @@ The API will return three error types when requests fail:
 
 ### POST /categories/{category_id}/questions
 * General:
-    * Fetches all questions whos category equals `category_id`.
+    * Fetches all questions whos category equals `category_id`, paginated in groups of 10.
     * Returns a success value, a list of question objects, total number of questions, current category, and a list of categories.
     * Results are paginated in groups of 10. Include a request argument to choose the page number, starting from 1. The default page number is 1.
 * Sample: `curl http://127.0.0.1:5000/categories/1/questions`
