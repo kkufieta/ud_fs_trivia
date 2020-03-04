@@ -15,8 +15,8 @@ def create_app(test_config=None):
     setup_db(app)
 
     '''
-  Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-  '''
+    Set up CORS. Allow '*' for origins.
+    '''
     cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
     # @app.route('/messages')
@@ -25,8 +25,8 @@ def create_app(test_config=None):
     # return 'GETTING MESSAGES'
 
     '''
-  Use the after_request decorator to set Access-Control-Allow
-  '''
+    Use the after_request decorator to set Access-Control-Allow
+    '''
     # CORS Headers
     @app.after_request
     def after_request(response):
@@ -139,11 +139,12 @@ def create_app(test_config=None):
         })
 
     '''
-  Endpoint to DELETE question using a question ID.
+    Endpoint to DELETE question using a question ID.
 
-  TEST: When you click the trash icon next to a question, the question will be removed.
-  This removal will persist in the database and when you refresh the page.
-  '''
+    TEST: When you click the trash icon next to a question,
+    the question will be removed. This removal will persist
+    in the database and when you refresh the page.
+    '''
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
         try:
@@ -183,8 +184,12 @@ def create_app(test_config=None):
         search_term = body.get('searchTerm')
         if not search_term or not isinstance(search_term, str):
             abort(400)
-        questions = Question.query.filter(Question.question.ilike('%' + search_term + '%'))\
-            .order_by(Question.id).all()
+        questions = Question.query.filter(
+            Question.question.ilike(
+                '%' +
+                search_term +
+                '%')) .order_by(
+            Question.id).all()
 
         current_questions = paginate_questions(request, questions)
 
@@ -295,8 +300,11 @@ def create_app(test_config=None):
 
         previous_questions = body.get('previous_questions')
         quiz_category = body.get('quiz_category')
-        if (previous_questions is None or not quiz_category or not 'id' in quiz_category or
-                not isinstance(previous_questions, list) or not isinstance(quiz_category, dict)):
+        if (previous_questions is None or
+            not quiz_category or
+            'id' not in quiz_category or
+            not isinstance(previous_questions, list) or
+                not isinstance(quiz_category, dict)):
             abort(400)
 
         category_id = quiz_category['id']
@@ -307,8 +315,9 @@ def create_app(test_config=None):
         if category_id == 0:
             question_ids = Question.query.with_entities(Question.id).all()
         else:
-            question_ids = Question.query.filter(Question.category == category_id).\
-                with_entities(Question.id).all()
+            question_ids = Question.query.filter(
+                Question.category == category_id). with_entities(
+                Question.id).all()
 
         # We grab a random question id. If it is already a previous question,
         # we pop it out of the question_ids array and try to find a new

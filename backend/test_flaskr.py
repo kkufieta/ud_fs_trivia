@@ -216,13 +216,15 @@ class TriviaTestCase(unittest.TestCase):
         self.check_422(res, data)
 
     def test_400_invalid_search_term(self):
-        res = self.client().post('/questions/search', json=self.invalidSearchTerm)
+        res = self.client().post('/questions/search',
+                                 json=self.invalidSearchTerm)
         data = json.loads(res.data)
 
         self.check_400(res, data)
 
     def test_200_search_for_question(self):
-        res = self.client().post('/questions/search', json=self.searchTerm)
+        res = self.client().post('/questions/search',
+                                 json=self.searchTerm)
         data = json.loads(res.data)
 
         self.check_200(res, data)
@@ -235,14 +237,16 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_200_play_quiz(self):
         # Test with all categories
-        res = self.client().post('/quizzes', json=self.play_quiz_json_category_all)
+        res = self.client().post('/quizzes',
+                                 json=self.play_quiz_json_category_all)
         data = json.loads(res.data)
 
         self.check_200(res, data)
         self.assertTrue(data['question'])
 
         # Test with category 1
-        res = self.client().post('/quizzes', json=self.play_quiz_json_category_1)
+        res = self.client().post('/quizzes',
+                                 json=self.play_quiz_json_category_1)
         data = json.loads(res.data)
 
         self.check_200(res, data)
@@ -252,7 +256,8 @@ class TriviaTestCase(unittest.TestCase):
             self.play_quiz_question_id_category_1)
 
         # Test with category 2
-        res = self.client().post('/quizzes', json=self.play_quiz_json_category_2)
+        res = self.client().post('/quizzes',
+                                 json=self.play_quiz_json_category_2)
         data = json.loads(res.data)
 
         self.check_200(res, data)
